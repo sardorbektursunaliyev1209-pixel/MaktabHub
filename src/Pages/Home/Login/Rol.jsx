@@ -70,7 +70,7 @@ function Rol() {
           </div>
 
           <button
-           onClick={()=> sel === "parent" ? navigate("/Parent"): navigate("/Teacher")}
+           onClick={()=> sel === "parent" ? navigate("/Parent"): navigate("")}
           className="w-full h-12 mt-6 rounded-xl bg-blue-600 text-white font-semibold">
             {sel === "parent" ? "Ota-ona " : "O'qituvchi "}
             sifatida davom etish
