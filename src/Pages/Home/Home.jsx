@@ -3,13 +3,16 @@ import Login from "./Login/Login";
 import Kod from "./Login/Kod";
 import Rol from "./Login/Rol";
 import ParentHome from "./Parent/ParentHome";
-import TeacherHome from "./Teacher/TeacherHome";
-import Grades from "./Parent/Grades";
-import Schedule from "./Parent/Schedule";
+// import TeacherHome from "./Teacher/TeacherHome";
+// import Grades from "./Parent/Grades";
+// import Schedule from "./Parent/Schedule";
 import Messages from "./Parent/Messages";
 import Profile from "./Parent/Profile";
 import SubjectDetail from "./Parent/SubjectDetail";
 import Attendance from "./Parent/Attendance";
+import TeacherHome from "./teacher/TeacherHome";
+import Grades from "./Parent/grades";
+import Schedule from "./Parent/schedule";
 
 function Home() {
   return (
