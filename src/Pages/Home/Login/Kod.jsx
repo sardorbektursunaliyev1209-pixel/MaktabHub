@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 function Kod() {
   const navigate = useNavigate();
-
+  const inputs = useRef([]);
   return (
     <>
       <div className="Kod">
@@ -21,7 +21,10 @@ function Kod() {
             <p className="text-gray-500 mt-2">
               +998 93 855 12 09 raqamiga 6 xonali kod yubordik.
             </p>
-            <Link to="/" className="block mt-1 text-blue-600 text-sm font-medium">
+            <Link
+              to="/"
+              className="block mt-1 text-blue-600 text-sm font-medium"
+            >
               Raqamni o'zgartirish
             </Link>
           </div>
@@ -29,6 +32,17 @@ function Kod() {
           <div className="flex gap-2 mt-8">
             {[0, 1, 2, 3, 4, 5].map((i) => (
               <input
+                onChange={(e) => {
+                  if (e.target.value && i < 5) {
+                    inputs.current[i + 1].focus();
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Backspace" && !e.target.value && i > 0) {
+                    inputs.current[i - 1].focus();
+                  }
+                }}
+                ref={(el) => (inputs.current[i] = el)}
                 key={i}
                 type="tel"
                 maxLength={1}
@@ -41,7 +55,10 @@ function Kod() {
             Kodni qayta yuborish: 0:42
           </p>
 
-          <button className="w-full h-12 mt-8 rounded-xl bg-blue-600 text-white font-semibold">
+          <button
+            onClick={() => navigate("/Rol")}
+            className="w-full h-12 mt-8 rounded-xl bg-blue-600 text-white font-semibold"
+          >
             Tasdiqlash
           </button>
 
