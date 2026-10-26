@@ -3,9 +3,9 @@ import Login from "./Login/Login";
 import Kod from "./Login/Kod";
 import Rol from "./Login/Rol";
 import ParentHome from "./Parent/ParentHome";
-import TeacherHome from "./teacher/TeacherHome";
-import Grades from "./Parent/grades";
-import Schedule from "./Parent/schedule";
+import TeacherHome from "./Teacher/TeacherHome";
+import Grades from "./Parent/Grades";
+import Schedule from "./Parent/Schedule";
 import Messages from "./Parent/Messages";
 import Profile from "./Parent/Profile";
 import SubjectDetail from "./Parent/SubjectDetail";
@@ -17,14 +17,14 @@ function Home() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/kod" element={<Kod />} />
-        <Route path="/Rol" element={<Rol />} />
-        <Route path="/Parent" element={<ParentHome />} />
-        <Route path="/Teacher" element={<TeacherHome />} />
+        <Route path="/rol" element={<Rol />} />
+        <Route path="/parent" element={<ParentHome />} />
+        <Route path="/teacher" element={<TeacherHome />} />
         <Route path="/grades" element={<Grades />} />
+        <Route path="/grades/:subject" element={<SubjectDetail />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/grades/:subject" element={<SubjectDetail />} />
         <Route path="/attendance" element={<Attendance />} />
       </Routes>
     </>
