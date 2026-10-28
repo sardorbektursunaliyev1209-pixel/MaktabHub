@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./Login/Login";
 import Kod from "./Login/Kod";
-import Rol from "./Login/Rol";
+// import Rol from "./Login/Rol";
 import ParentHome from "./Parent/ParentHome";
 import Messages from "./Parent/Messages";
 import Profile from "./Parent/Profile";
@@ -16,7 +16,7 @@ function Home() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/kod" element={<Kod />} />
-        <Route path="/rol" element={<Rol />} />
+        {/* <Route path="/rol" element={<Rol />} /> */}
         <Route path="/parent" element={<ParentHome />} />
         <Route path="/grades" element={<Grades />} />
         <Route path="/grades/:subject" element={<SubjectDetail />} />

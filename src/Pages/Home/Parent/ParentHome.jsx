@@ -10,7 +10,8 @@ import {
 import { Link } from "react-router-dom";
 import { TbAlertCircle } from "react-icons/tb";
 import BottomNav from "../../../Components/Navbar/BottomNav";
-
+import useNow from "../../../hooks/useNow";
+import {months, weekdays} from "../../../utils/Data.js"
 const grades = [
   {
     id: 1,
@@ -20,6 +21,7 @@ const grades = [
     color: "bg-green-100 text-green-700",
     link: "#",
   },
+  
   {
     id: 2,
     grade: 4,
@@ -31,6 +33,7 @@ const grades = [
 ];
 
 function ParentHome() {
+  const now = useNow()
   return (
     <>
       <div className="ParentHome">
@@ -65,8 +68,8 @@ function ParentHome() {
 
           <section className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col gap-3 mt-5">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold">Bugun, 22-oktabr</h2>
-              <span className="text-xs text-slate-500">Payshanba</span>
+              <h2 className="text-base font-semibold">Bugun,  {now.getDate()}-{months[now.getMonth()]}</h2>
+              <span className="text-xs text-slate-500">{weekdays[now.getDay()]}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -128,18 +131,18 @@ function ParentHome() {
             </div>
           </section>
           <section className="grid grid-cols-4 gap-2 mt-3">
-            <div className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
+            <Link to={"/schedule"} className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
               <TbCalendar size={25} color="blue" />
               <span>Jadval</span>
-            </div>
+            </Link>
             <div className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
               <TbBook size={25} color="blue" />
               <span>Vazifalar</span>
             </div>
-            <div className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
+            <Link to={"/messages"} className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
               <TbMessage size={25} color="blue" />
               <span>Xabar</span>
-            </div>
+            </Link>
             <div className="flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-xl py-3">
               <TbCreditCard size={25} color="blue" />
               <span>To'lov</span>
@@ -156,17 +159,23 @@ function ParentHome() {
                 <p className="text-gray-500 text-[13px]">120 000 so'm · 30-Oktabrgacha </p>
               </div>
             </div>
-            <button className="px-4 py-2 rounded-2xl bg-blue-100">
-
+            <button className="h-11 px-[18px] rounded-xl bg-blue-50 text-blue-600 text-sm font-medium ">
               To'lash 
             </button>
           </section>
-
           <BottomNav/>
         </div>
       </div>
     </>
   );
 }
-
 export default ParentHome;
+
+
+
+
+
+
+
+
+

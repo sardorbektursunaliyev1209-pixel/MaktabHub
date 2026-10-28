@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
+import { useState } from "react";
+import useNow from "../../../hooks/useNow";
+import {months} from "../../../utils/Data.js"
 
 const statusStyles = {
   present: { label: "keldi", cell: "bg-green-100 text-green-700" },
   late: { label: "kechikdi", cell: "bg-amber-100 text-amber-700" },
-  absent: { label: "kelmadi", label2: "", cell: "bg-red-100 text-red-700" },
+  absent: { label: "kelmadi", cell: "bg-red-100 text-red-700" },
   off: { label: "dam olish", cell: "bg-slate-100 text-slate-500" },
   future: { label: "kelgusi kun", cell: "text-slate-400" },
 };
@@ -41,7 +44,7 @@ const exceptions = [
   },
 ];
 
-// Oktabr 2026: 1-oktabr payshanba, shuning uchun boshida 3 ta bo'sh katak
+// Hozircha taqvim oktabr 2026 uchun: 1-oktabr payshanba, boshida 3 ta bo'sh katak
 function buildCells() {
   const cells = [];
 
@@ -67,6 +70,30 @@ function buildCells() {
 const cells = buildCells();
 
 function Attendance() {
+  const now = useNow();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth());
+
+  const monthName = months[month].charAt(0).toUpperCase() + months[month].slice(1);
+
+  const prevMonth = () => {
+    if (month === 0) {
+      setMonth(11);
+      setYear(year - 1);
+    } else {
+      setMonth(month - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (month === 11) {
+      setMonth(0);
+      setYear(year + 1);
+    } else {
+      setMonth(month + 1);
+    }
+  };
+
   return (
     <div className="Attendance">
       <div className="container px-4 pt-6 flex flex-col gap-4">
@@ -81,7 +108,7 @@ function Attendance() {
           <div>
             <h1 className="text-[22px] leading-7 font-bold">Davomat</h1>
             <div className="text-xs font-medium text-slate-500">
-              Aziz · 7-B · Oktabr 2026
+              Aziz · 7-B · {monthName} {year}
             </div>
           </div>
         </header>
@@ -92,7 +119,9 @@ function Attendance() {
               key={s.label}
               className="bg-white border border-gray-200 rounded-[14px] p-3"
             >
-              <div className="text-xs font-medium text-slate-600">{s.label}</div>
+              <div className="text-xs font-medium text-slate-600">
+                {s.label}
+              </div>
               <div className={`text-[22px] leading-7 font-bold ${s.color}`}>
                 {s.value}
               </div>
@@ -103,13 +132,17 @@ function Attendance() {
         <section className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <button
+              onClick={prevMonth}
               aria-label="Oldingi oy"
               className="w-9 h-9 border border-gray-200 rounded-[10px] bg-white flex items-center justify-center"
             >
               <TbChevronLeft size={18} />
             </button>
-            <h2 className="text-base font-semibold">Oktabr 2026 · 94%</h2>
+            <h2 className="text-base font-semibold">
+              {monthName} {year} · 94%
+            </h2>
             <button
+              onClick={nextMonth}
               aria-label="Keyingi oy"
               className="w-9 h-9 border border-gray-200 rounded-[10px] bg-white flex items-center justify-center"
             >
@@ -137,14 +170,16 @@ function Attendance() {
                 >
                   {c.d}
                 </span>
-              )
+              ),
             )}
           </div>
 
           <div className="flex flex-wrap gap-3 text-xs font-medium text-slate-600">
             {legend.map((l) => (
               <span key={l.label} className="flex items-center gap-1.5">
-                <span className={`w-2.5 h-2.5 rounded-[3px] border ${l.color}`}></span>
+                <span
+                  className={`w-2.5 h-2.5 rounded-[3px] border ${l.color}`}
+                ></span>
                 {l.label}
               </span>
             ))}

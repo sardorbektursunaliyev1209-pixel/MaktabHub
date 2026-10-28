@@ -56,7 +56,7 @@ function Kod() {
           </p>
 
           <button
-            onClick={() => navigate("/Rol")}
+            onClick={() => navigate("/Parent")}
             className="w-full h-12 mt-8 rounded-xl bg-blue-600 text-white font-semibold"
           >
             Tasdiqlash

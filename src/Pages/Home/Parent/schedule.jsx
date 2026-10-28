@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { TbAlertCircle } from "react-icons/tb";
+import useNow from "../../../hooks/useNow";
+import { months, weekdaysShort } from "../../../utils/Data";
 import BottomNav from "../../../Components/Navbar/BottomNav";
 
 const teachers = {
@@ -32,27 +34,61 @@ const rooms = {
   Tarbiya: "214-xona",
 };
 
-const times = [
-  "08:00–08:45",
-  "09:00–09:45",
-  "10:00–10:45",
-  "11:00–11:45",
-  "12:00–12:45",
-  "13:00–13:45",
+const lessonTimes = [
+  { start: 480, end: 525, label: "08:00–08:45" },
+  { start: 540, end: 585, label: "09:00–09:45" },
+  { start: 600, end: 645, label: "10:00–10:45" },
+  { start: 660, end: 705, label: "11:00–11:45" },
+  { start: 720, end: 765, label: "12:00–12:45" },
+  { start: 780, end: 825, label: "13:00–13:45" },
 ];
 
-const week = [
-  { wd: "Du", n: "19", subj: ["Matematika", "Ona tili", "Ingliz tili", "Tarix", "Biologiya", "Tarbiya"] },
-  { wd: "Se", n: "20", subj: ["Fizika", "Matematika", "Adabiyot", "Informatika", "Rus tili"] },
-  { wd: "Ch", n: "21", subj: ["Ona tili", "Geografiya", "Matematika", "Ingliz tili", "Jismoniy tarbiya", "Tarix"] },
-  { wd: "Pa", n: "22", today: true, subj: ["Ona tili", "Ingliz tili", "Matematika", "Fizika", "Tarix", "Jismoniy tarbiya"] },
-  { wd: "Ju", n: "23", note: "Ertaga 1-dars: Fizika nazorat ishi", subj: ["Fizika", "Matematika", "Biologiya", "Adabiyot", "Rus tili"] },
-  { wd: "Sh", n: "24", subj: ["Informatika", "Ingliz tili", "Geografiya", "Matematika"] },
+// Indeks: 0 = dushanba ... 5 = shanba. Keyin backend'dan keladi.
+const lessonsByDay = [
+  ["Matematika", "Ona tili", "Ingliz tili", "Tarix", "Biologiya", "Tarbiya"],
+  ["Fizika", "Matematika", "Adabiyot", "Informatika", "Rus tili"],
+  ["Ona tili", "Geografiya", "Matematika", "Ingliz tili", "Jismoniy tarbiya", "Tarix"],
+  ["Ona tili", "Ingliz tili", "Matematika", "Fizika", "Tarix", "Jismoniy tarbiya"],
+  ["Fizika", "Matematika", "Biologiya", "Adabiyot", "Rus tili"],
+  ["Informatika", "Ingliz tili", "Geografiya", "Matematika"],
 ];
+
+// Kun bo'yicha eslatma. Keyin backend'dan keladi.
+const notesByDay = {
+  4: "Ertaga 1-dars: Fizika nazorat ishi",
+};
 
 function Schedule() {
-  const [day, setDay] = useState(3);
-  const cur = week[day];
+  const now = useNow();
+
+  // 0 = dushanba ... 6 = yakshanba
+  const todayIndex = (now.getDay() + 6) % 7;
+  const isSunday = todayIndex === 6;
+
+  // Yakshanba bo'lsa, keyingi hafta jadvali ko'rsatiladi
+  const offset = isSunday ? 1 : -todayIndex;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + offset);
+
+  const weekDates = [0, 1, 2, 3, 4, 5].map((i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+
+  const [day, setDay] = useState(isSunday ? 0 : todayIndex);
+
+  const first = weekDates[0];
+  const last = weekDates[5];
+  const range =
+    first.getMonth() === last.getMonth()
+      ? `${first.getDate()}–${last.getDate()}-${months[first.getMonth()]}`
+      : `${first.getDate()}-${months[first.getMonth()]} – ${last.getDate()}-${months[last.getMonth()]}`;
+
+  const lessons = lessonsByDay[day];
+  const note = notesByDay[day];
+  const selectedIsToday = weekDates[day].toDateString() === now.toDateString();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
   return (
     <div className="Schedule">
@@ -60,21 +96,31 @@ function Schedule() {
         <header>
           <h1 className="text-[22px] leading-7 font-bold">Dars jadvali</h1>
           <div className="text-xs font-medium text-slate-500">
-            Aziz · 7-B · 2-chorak, 19–24-oktabr
+            Aziz · 7-B · 2-chorak, {range}
           </div>
         </header>
 
+        {isSunday && (
+          <section className="bg-blue-50 rounded-[14px] px-3.5 py-3 flex gap-2.5 items-center">
+            <TbAlertCircle size={20} className="text-blue-600 shrink-0" />
+            <span className="text-sm font-medium">
+              Bugun yakshanba, dars yo'q. Keyingi hafta jadvali ko'rsatilmoqda.
+            </span>
+          </section>
+        )}
+
         <div className="grid grid-cols-6 gap-1.5">
-          {week.map((d, i) => {
+          {weekDates.map((d, i) => {
             const sel = i === day;
+            const today = d.toDateString() === now.toDateString();
             return (
               <button
-                key={d.n}
+                key={i}
                 onClick={() => setDay(i)}
                 className={`h-[60px] rounded-xl flex flex-col items-center justify-center gap-0.5 ${
                   sel
                     ? "bg-blue-600 text-white"
-                    : d.today
+                    : today
                     ? "bg-white text-slate-900 border-2 border-blue-600"
                     : "bg-white text-slate-900 border border-gray-200"
                 }`}
@@ -84,34 +130,38 @@ function Schedule() {
                     sel ? "text-blue-100" : "text-slate-500"
                   }`}
                 >
-                  {d.wd}
+                  {weekdaysShort[d.getDay()]}
                 </span>
-                <span className="text-base font-semibold">{d.n}</span>
+                <span className="text-base font-semibold">{d.getDate()}</span>
               </button>
             );
           })}
         </div>
 
-        {cur.note && (
+        {note && (
           <section className="bg-amber-100 rounded-[14px] px-3.5 py-3 flex gap-2.5 items-center">
             <TbAlertCircle size={20} className="text-amber-700 shrink-0" />
-            <span className="text-sm font-medium">{cur.note}</span>
+            <span className="text-sm font-medium">{note}</span>
           </section>
         )}
 
         <section className="bg-white border border-gray-200 rounded-2xl py-1">
-          {cur.subj.map((s, i) => {
-            const now = cur.today && i === 2;
+          {lessons.map((s, i) => {
+            const t = lessonTimes[i];
+            const current =
+              selectedIsToday && nowMinutes >= t.start && nowMinutes < t.end;
             return (
               <div
                 key={i}
                 className={`flex items-center gap-3 px-4 py-3 ${
                   i > 0 ? "border-t border-gray-200" : ""
-                } ${now ? "bg-blue-50" : ""}`}
+                } ${current ? "bg-blue-50" : ""}`}
               >
                 <span
                   className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-xs font-semibold ${
-                    now ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"
+                    current
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   {i + 1}
@@ -120,7 +170,7 @@ function Schedule() {
                 <span className="flex-1 min-w-0">
                   <span className="flex items-center gap-2">
                     <span className="text-sm font-semibold">{s}</span>
-                    {now && (
+                    {current && (
                       <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[11px] font-semibold">
                         Hozir
                       </span>
@@ -132,7 +182,7 @@ function Schedule() {
                 </span>
 
                 <span className="text-xs font-medium text-slate-600 text-right whitespace-nowrap">
-                  {times[i]}
+                  {t.label}
                 </span>
               </div>
             );

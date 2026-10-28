@@ -166,6 +166,7 @@ function SubjectDetail() {
             </div>
           ))}
         </section>
+        
       </div>
     </div>
   );
